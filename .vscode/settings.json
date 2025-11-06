@@ -4,8 +4,14 @@
         "dotenv",
         "healthcheck",
         "huggingface",
+        "kwargs",
+        "logprobs",
+        "monokai",
         "ollama",
+        "pycache",
         "QUEN",
-        "qwen"
+        "qwen",
+        "renderable",
+        "renderables"
     ]
 }

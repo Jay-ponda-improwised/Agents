@@ -3,8 +3,8 @@ this code demonstrate to the user how to establish communication between
 the script and the remote llm server provider.
 """
 
-import json
 from langchain_openai import ChatOpenAI
+from pydantic import SecretStr
 from constants.config import (
     KEY,
     HOST,
@@ -15,9 +15,14 @@ from constants.config import (
 )
 from constants.singleton import styler
 
+if not MODEL_QUEN:
+    raise ValueError("MODEL_QUEN must be set in constants.config")
+if not KEY:
+    raise ValueError("KEY must be set in constants.config")
+
 model = ChatOpenAI(
     model=MODEL_QUEN,
-    api_key=KEY,
+    api_key=SecretStr(KEY),
     base_url=HOST,
     temperature=0.7,
     seed=236,
@@ -30,12 +35,13 @@ model = ChatOpenAI(
 
 response = model.invoke(
     f"""
-        Why do parrots talk? 
-        settings: 
-        - in max 5 lines.
-        - giving replay in raw markdown format. 
+        Question:
+        - Why do parrots talk?
+        settings:
+        - in max 2 lines.
+        - giving replay in raw markdown format.
         - it should be in json format (json format should be structured and valid).
-        - key will be topic and value will be the reason. (I.E. biological: he has something...) 
+        - key will be topic and value will be the reason. (I.E. biological: he has something...)
         - markdown code should have language information like ```<language> content... ``` (I.E. ```json {{}}```)
         - it should be consistent int one human language
     """

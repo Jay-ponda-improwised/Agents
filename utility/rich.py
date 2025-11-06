@@ -2,6 +2,9 @@
 Utility module for Rich library styling that can be reused across the project.
 """
 
+import json
+from typing import Optional, Match, List, Any
+
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
@@ -44,14 +47,14 @@ class RichStyler:
         # Pattern to match code blocks in markdown (```language\ncode\n```)
         code_block_pattern = r"```(\w+)?\n(.*?)```"
 
-        def replace_code_block(match):
+        def replace_code_block(match: Match[str]) -> str:
 
             # Return a placeholder that we'll replace with the actual panel
             # We use a unique marker that won't appear in normal text
             return f"<!--CODE_PANEL:{len(match.group(0))}-->"
 
         # Replace code blocks with placeholders
-        processed_content, replacements = re.subn(
+        processed_content = re.sub(
             code_block_pattern, replace_code_block, content, flags=re.DOTALL
         )
 
@@ -63,10 +66,10 @@ class RichStyler:
         self,
         content: str,
         title: str = "Response",
-        md_style=None,
-        border_style=None,
-        title_style=None,
-    ):
+        md_style: Optional[Style] = None,
+        border_style: Optional[str] = None,
+        title_style: Optional[Style] = None,
+    ) -> None:
         """
         Print content in a Markdown panel with custom styling.
 
@@ -98,13 +101,16 @@ class RichStyler:
         # Print to console
         self.console.print(panel)
 
-    def _render_content_with_code_panels(self, content: str):
+    def _render_content_with_code_panels(self, content: str) -> Any:
         """
         Render content with code blocks as separate panels.
 
         This method handles the actual rendering of code blocks as panels
         within the markdown content.
         """
+        # Process JSON content to ensure proper formatting
+        content = self._format_json_in_markdown(content)
+        
         # Split content by code blocks
         parts = re.split(r"```(\w+)?\n(.*?)```", content, flags=re.DOTALL)
 
@@ -115,7 +121,7 @@ class RichStyler:
         # We have code blocks, build a renderable group
         from rich.console import Group
 
-        renderables = []
+        renderables: List[Any] = []
 
         i = 0
         while i < len(parts):
@@ -185,8 +191,12 @@ class RichStyler:
         self.console.print(code_panel)
 
     def print_styled_text(
-        self, content: str, style=None, italic=False, underline=False
-    ):
+        self,
+        content: str,
+        style: Optional[Style] = None,
+        italic: bool = False,
+        underline: bool = False,
+    ) -> None:
         """
         Print styled text directly.
 
@@ -225,3 +235,34 @@ class RichStyler:
         self.print_styled_text(
             f"⚠ {message}", style=Style(color="yellow", bold=True)
         )
+
+    def _format_json_in_markdown(self, content: str) -> str:
+        """
+        Format JSON content in markdown with 4-space indentation.
+
+        Args:
+            content (str): The markdown content to process
+
+        Returns:
+            str: Processed content with properly formatted JSON
+        """
+        # Pattern to match JSON code blocks in markdown (```json\n...\n```)
+        json_block_pattern = r"```json\s*\n(.*?)\n\s*```"
+
+        def format_json_block(match: Match[str]) -> str:
+            try:
+                # Extract JSON content
+                json_content = match.group(1)
+                
+                # Parse and reformat with 4-space indentation
+                parsed_json = json.loads(json_content)
+                formatted_json = json.dumps(parsed_json, indent=4)
+                
+                # Return formatted JSON in code block
+                return f"```json\n{formatted_json}\n```"
+            except json.JSONDecodeError:
+                # If JSON is invalid, return as is
+                return match.group(0)
+
+        # Replace JSON code blocks with formatted versions
+        return re.sub(json_block_pattern, format_json_block, content, flags=re.DOTALL)

@@ -4,10 +4,16 @@ the script and the remote llm server provider.
 """
 
 import json
+
 from constants.config import OLLAMA_HOST, MODEL_QUEN_EMBEDDINGS, ROOT_DIR
 from constants.singleton import styler
 from langchain_ollama import OllamaEmbeddings
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
+
+if not MODEL_QUEN_EMBEDDINGS:
+    raise ValueError("MODEL_QUEN_EMBEDDINGS must be set in constants.config")
+if not ROOT_DIR:
+    raise ValueError("ROOT_DIR must be set in constants.config")
 
 string = """
         {
@@ -23,13 +29,13 @@ string = """
 
 
 # Initialize Ollama embeddings
-embeddings = OllamaEmbeddings(
+embeddings = OllamaEmbeddings(  # type: ignore[reportGeneralTypeIssues]
     model=MODEL_QUEN_EMBEDDINGS,
     base_url=OLLAMA_HOST,
 )
 
 # Test the embeddings
-query_result = embeddings.embed_query(string)
+query_result = embeddings.embed_query(string)  # type: ignore[reportGeneralTypeIssues]
 print(f"Embedding dimension: {len(query_result)}")
 
 styler.print_markdown_panel(json.dumps(query_result))
@@ -42,7 +48,7 @@ documents = [
     "Vocal mimicry helps them establish territory and communicate with other birds in the wild.",
     "Pet parrots often talk to entertain themselves and gain attention from their human companions.",
 ]
-doc_embeddings = embeddings.embed_documents(documents)
+doc_embeddings = embeddings.embed_documents(documents)  # type: ignore[reportGeneralTypeIssues]
 print(f"Number of documents: {len(doc_embeddings)}")
 
 styler.print_markdown_panel(json.dumps(doc_embeddings))
