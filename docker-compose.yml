@@ -1,11 +1,14 @@
 services:
   ollama:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.12.9
     container_name: ollama-server
     ports:
       - "11434:11434"
     environment:
       - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_DEBUG=true
+      - OLLAMA_MAX_LOADED_MODELS=1
+      - OLLAMA_KEEP_ALIVE=5m
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped

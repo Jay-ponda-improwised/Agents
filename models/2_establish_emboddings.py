@@ -3,67 +3,60 @@ this code demonstrate to the user how to establish communication between
 the script and the remote llm server provider.
 """
 
-from langchain_openai import OpenAIEmbeddings
-from constants.config import (
-    KEY,
-    HOST,
-    MODEL_QUEN,
-    MAX_TIME_TO_WAIT,
-    RETRIES,
-    MODEL_QUEN_EMBEDDINGS,
-)
 import json
+from constants.config import OLLAMA_HOST, MODEL_QUEN_EMBEDDINGS, ROOT_DIR
 from constants.singleton import styler
+from langchain_ollama import OllamaEmbeddings
+from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 
-import os
-from huggingface_hub import InferenceClient
-
-client = InferenceClient(
-    provider="hf-inference",
-    api_key=MODEL_QUEN_EMBEDDINGS,
-)
-
-result = client.feature_extraction(
-    """
-        {                                                                             
-            "biological": "Parrots have specialized vocal organs called syrinx that allow them to mimic sounds and human speech.",                                        
-            "social": "They use talking as a form of social bonding and communication within their flock or with humans.",                                                   
-            "intelligence": "Parrots are highly intelligent birds that can learn and repeat words to interact with their environment.",                                     
-            "territorial": "Vocal mimicry helps them establish territory and communicate with other birds in the wild.",                                                 
-            "entertainment": "Pet parrots often talk to entertain themselves and gain attention from their human companions."                                         
-        }      
+string = """
+        {
+            "biological": "Parrots have specialized vocal organs called syrinx that allow them to mimic sounds and human speech.",
+            "social": "They use talking as a form of social bonding and communication within their flock or with humans.",
+            "intelligence": "Parrots are highly intelligent birds that can learn and repeat words to interact with their environment.",
+            "territorial": "Vocal mimicry helps them establish territory and communicate with other birds in the wild.",
+            "entertainment": "Pet parrots often talk to entertain themselves and gain attention from their human companions."
+        }
     """.replace(
-        r"[ \n\t\r]+", " "
-    ).strip(),
-    model="Qwen/Qwen3-Embedding-0.6B",
+    r"[ \n\t\r]+", " "
+).strip()
+
+
+# Initialize Ollama embeddings
+embeddings = OllamaEmbeddings(
+    model=MODEL_QUEN_EMBEDDINGS,
+    base_url=OLLAMA_HOST,
 )
 
-# model = OpenAIEmbeddings(
-#     model=MODEL_QUEN,
-#     api_key=KEY,
-#     base_url=HOST,
-#     skip_empty=True,
-#     timeout=MAX_TIME_TO_WAIT,
-#     retry_max_seconds=MAX_TIME_TO_WAIT,
-#     max_retries=RETRIES,
-#     chunk_size=64,
-#     dimensions=32,
-# )
+# Test the embeddings
+query_result = embeddings.embed_query(string)
+print(f"Embedding dimension: {len(query_result)}")
 
-# result = model.embed_query(
-#     """
-#         {
-#             "biological": "Parrots have specialized vocal organs called syrinx that allow them to mimic sounds and human speech.",
-#             "social": "They use talking as a form of social bonding and communication within their flock or with humans.",
-#             "intelligence": "Parrots are highly intelligent birds that can learn and repeat words to interact with their environment.",
-#             "territorial": "Vocal mimicry helps them establish territory and communicate with other birds in the wild.",
-#             "entertainment": "Pet parrots often talk to entertain themselves and gain attention from their human companions."
-#         }
-#     """.replace(
-#         r"[ \n\t\r]+", " "
-#     ).strip()
-# )
+styler.print_markdown_panel(json.dumps(query_result))
 
-print(result)
+# For multiple documents
+documents = [
+    "Parrots have specialized vocal organs called syrinx that allow them to mimic sounds and human speech.",
+    "They use talking as a form of social bonding and communication within their flock or with humans.",
+    "Parrots are highly intelligent birds that can learn and repeat words to interact with their environment.",
+    "Vocal mimicry helps them establish territory and communicate with other birds in the wild.",
+    "Pet parrots often talk to entertain themselves and gain attention from their human companions.",
+]
+doc_embeddings = embeddings.embed_documents(documents)
+print(f"Number of documents: {len(doc_embeddings)}")
 
-# Display the response using the utility class.rint_markdown_panel(json.dumps(response), title="Parrot Talk Response")
+styler.print_markdown_panel(json.dumps(doc_embeddings))
+
+
+# hugging face
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2",
+    cache_folder=ROOT_DIR + "/.cache",
+    show_progress=True,
+    model_kwargs={"device": "cpu"},
+    query_encode_kwargs={"normalize_embeddings": True},
+)
+
+print(embeddings.embed_query(string))
+
+styler.print_markdown_panel(json.dumps(embeddings.embed_query(string)))
