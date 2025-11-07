@@ -20,6 +20,8 @@ from utility.Console.Component.SubTopic.Base import SubTopic
 from utility.Console.Component.TextBlock.Base import TextBlock
 from utility.Console.Component.CodeBlock.Base import CodeBlock
 from utility.Console.Component.Table.Base import TableComponent
+from utility.Console.Component.List.Base import ListComponent
+from utility.Console.Component.Line.Base import LineComponent
 from utility.Console.MarkdownComponentMissingError import MarkdownComponentMissingError
 
 
@@ -67,51 +69,87 @@ class VirtualMarkdownBoard:
             return new_component.get_id()
         return self._add_component(new_component)
 
-    def write_main_title(self, text: str, component_id: Optional[str] = None) -> str:
+    def main_title(self, text: str, component_id: Optional[str] = None) -> str:
         """
         Adds or replaces an H1 title.
         """
         return self._handle_add_or_replace(MainTitle(text), component_id)
 
-    def write_sub_title(self, text: str, component_id: Optional[str] = None) -> str:
+    def sub_title(self, text: str, component_id: Optional[str] = None) -> str:
         """
         Adds or replaces an H2 title.
         """
         return self._handle_add_or_replace(SubTitle(text), component_id)
 
-    def write_topic(self, text: str, component_id: Optional[str] = None) -> str:
+    def topic(self, text: str, component_id: Optional[str] = None) -> str:
         """
         Adds or replaces an H3 title.
         """
         return self._handle_add_or_replace(Topic(text), component_id)
 
-    def write_sub_topic(self, text: str, component_id: Optional[str] = None) -> str:
+    def sub_topic(self, text: str, component_id: Optional[str] = None) -> str:
         """
         Adds or replaces an H4 title.
         """
         return self._handle_add_or_replace(SubTopic(text), component_id)
 
-    def write_text(self, text: str, component_id: Optional[str] = None) -> str:
+    def text(self, text: str, point: bool = False, component_id: Optional[str] = None) -> str:
         """
         Adds or replaces a text block.
         """
-        return self._handle_add_or_replace(TextBlock(text), component_id)
+        return self._handle_add_or_replace(TextBlock(text, point=point), component_id)
 
-    def write_code_block(
-        self, code: str, language: str = "text", title: str = "Code", component_id: Optional[str] = None
+    def code_block(
+        self,
+        code: str,
+        language: str = "text",
+        title: str = "Code",
+        component_id: Optional[str] = None,
     ) -> str:
         """
         Adds or replaces a code block.
         """
         return self._handle_add_or_replace(CodeBlock(code, language, title), component_id)
 
-    def write_table(
-        self, headers: List[str], rows: List[List[str]], first_column_as_header: bool = True, add_column_number: bool = False, component_id: Optional[str] = None
+    def table(
+        self,
+        headers: List[str],
+        rows: List[List[str]],
+        first_column_as_header: bool = True,
+        add_column_number: bool = False,
+        component_id: Optional[str] = None,
     ) -> str:
         """
         Adds or replaces a table.
         """
         return self._handle_add_or_replace(TableComponent(headers, rows, first_column_as_header, add_column_number), component_id)
+
+    def list(
+        self,
+        items: List[Union[str, List[Any], MarkdownComponent]],
+        ordered: bool = False,
+        level: int = 1,
+        component_id: Optional[str] = None,
+    ) -> str:
+        """
+        Adds or replaces a list.
+        """
+        return self._handle_add_or_replace(
+            ListComponent(items, ordered, level), component_id
+        )
+
+    def line(
+        self,
+        style: Optional[str] = "default",
+        character: str = "─",
+        component_id: Optional[str] = None,
+    ) -> str:
+        """
+        Adds or replaces a horizontal line.
+        """
+        return self._handle_add_or_replace(
+            LineComponent(style, character), component_id
+        )
 
     def replace_component(self, component_id: str, new_component: MarkdownComponent):
         """

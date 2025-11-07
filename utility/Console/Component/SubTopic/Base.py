@@ -8,4 +8,4 @@ class SubTopic(MarkdownComponent):
     """
 
     def bind(self) -> Text:
-        return Text(self.data, style=Style(color="green", bold=True))
+        return Text(f"➡ {self.data}", style=Style(color="green", bold=True))

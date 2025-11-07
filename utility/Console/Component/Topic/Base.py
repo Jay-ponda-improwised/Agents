@@ -8,4 +8,4 @@ class Topic(MarkdownComponent):
     """
 
     def bind(self) -> Text:
-        return Text(self.data, style=Style(color="cyan", bold=True))
+        return Text(f"● {self.data}", style=Style(color="cyan", bold=True))
