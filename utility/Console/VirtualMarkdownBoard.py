@@ -99,6 +99,12 @@ class VirtualMarkdownBoard:
         """
         return self._handle_add_or_replace(TextBlock(text, point=point), component_id)
 
+    def n(self):
+        """
+        Adds empty line
+        """
+        return self.text("\n")
+
     def code_block(
         self,
         code: str,

@@ -5,7 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from utility.Console.VirtualMarkdownBoard import VirtualMarkdownBoard
 
 md = VirtualMarkdownBoard()
-md.topic("Semantic Search")
+md.sub_title("Semantic Search")
 if not MODEL_QUEN_EMBEDDINGS:
     raise ValueError("MODEL_QUEN_EMBEDDINGS must be set in constants.config")
 if not ROOT_DIR:
@@ -69,6 +69,8 @@ md.text(
 
 result = cosine_similarity(np.array([question_embedding]), np.array(fact_embedding))
 
+md.n()
+md.topic("Results")
 md.list(
     [
         f"{x:.4f} ({month_facts[i]})"

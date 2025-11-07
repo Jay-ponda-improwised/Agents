@@ -120,6 +120,28 @@ board.take_snapshot("TextBlock Point Demo")
 ╰────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
+### Adding Empty Lines
+
+You can add empty lines using the `text` method with an empty string:
+
+```python
+board = VirtualMarkdownBoard()
+board.text("")
+board.text("This is a line after an empty line.")
+board.take_snapshot("Empty Line Demo")
+```
+
+**Output:**
+
+```
+╭─ Empty Line Demo ──────────────────────────────────────────────────────────────────────╮
+│                                                                                        │
+│                                                                                        │
+│  This is a line after an empty line.                                                   │
+│                                                                                        │
+╰────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
 ## CodeBlock
 
 A block of code.
