@@ -132,7 +132,7 @@ class VirtualMarkdownBoard:
 
     def list(
         self,
-        items: List[Union[str, List[Any], MarkdownComponent]],
+        items: List[Union[str, int, float, bool, List[Any], MarkdownComponent]],
         ordered: bool = False,
         level: int = 1,
         component_id: Optional[str] = None,

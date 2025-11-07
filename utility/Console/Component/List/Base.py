@@ -4,7 +4,7 @@ from rich.console import Group
 from utility.Console.Base import MarkdownParentComponent, MarkdownComponent
 
 class ListComponent(MarkdownParentComponent):
-    def __init__(self, items: PyList[Union[str, PyList[Any], MarkdownComponent]], ordered: bool = False, level: int = 1):
+    def __init__(self, items: PyList[Union[str, int, float, bool, PyList[Any], MarkdownComponent]], ordered: bool = False, level: int = 1):
         processed_items = []
         for item in items:
             if isinstance(item, PyList):

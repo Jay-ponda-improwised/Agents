@@ -11,6 +11,6 @@ class SubTitle(MarkdownComponent):
 
     def bind(self) -> Group:
         return Group(
-            Text(self.data, style=Style(color="yellow", bold=True)),
+            Text(self.data, style=Style(color="yellow", bold=True, underline=True)),
             Rule(style=Style(color="yellow"))
         )
