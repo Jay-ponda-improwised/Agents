@@ -1,13 +1,10 @@
-import json
-
+import numpy as np
 from constants.config import OLLAMA_HOST, MODEL_QUEN_EMBEDDINGS, ROOT_DIR
-from constants.singleton import styler
 from langchain_ollama import OllamaEmbeddings
-from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from sklearn.metrics.pairwise import cosine_similarity
+from utility.Console.VirtualMarkdownBoard import VirtualMarkdownBoard
 
-
-
+md = VirtualMarkdownBoard()
 if not MODEL_QUEN_EMBEDDINGS:
     raise ValueError("MODEL_QUEN_EMBEDDINGS must be set in constants.config")
 if not ROOT_DIR:
@@ -65,3 +62,21 @@ question_embedding = embeddings.embed_query(question)  # type: ignore[reportGene
 print(len(fact_embedding), len(question_embedding))
 
 # styler.print_markdown_panel(json.dumps(query_result))
+
+md.topic("Semantic Search")
+
+result = cosine_similarity(np.array([question_embedding]), np.array(fact_embedding))
+
+md.list(
+    [
+        f"{x:.4f} ({month_facts[i]})"
+        for rank, (i, x) in enumerate(
+            sorted(enumerate(result.tolist()[0]), key=lambda y: y[1], reverse=True)[:3]
+        )
+    ],  # Format floats as strings
+    ordered=True,
+)
+md.line(style="red")
+md.text(f"Biggest semantic match is {result[0][0]:.2f} at index {np.argmax(result):d}.")
+md.text(f"- Month is {month_facts[np.argmax(result)]}")
+md.take_snapshot()
