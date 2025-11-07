@@ -1,3 +1,3 @@
-from utility.rich import RichStyler
+from utility.rich_styler import RichStyler
 
 styler = RichStyler()

@@ -5,6 +5,7 @@ the script and the remote llm server provider.
 
 from langchain_openai import ChatOpenAI
 from pydantic import SecretStr
+import random
 from constants.config import (
     KEY,
     HOST,
@@ -20,12 +21,14 @@ if not MODEL_QUEN:
 if not KEY:
     raise ValueError("KEY must be set in constants.config")
 
+seed = random.randint(0, 999999)
+
 model = ChatOpenAI(
     model=MODEL_QUEN,
     api_key=SecretStr(KEY),
     base_url=HOST,
     temperature=0.7,
-    seed=236,
+    seed=seed,
     timeout=MAX_TIME_TO_WAIT,
     max_retries=RETRIES,
     max_completion_tokens=MAX_TOKENS,
@@ -37,7 +40,7 @@ response = model.invoke(
     f"""
         Question:
         - Why do parrots talk?
-        settings:
+        settings (must follow!):
         - in max 2 lines.
         - giving replay in raw markdown format.
         - it should be in json format (json format should be structured and valid).
@@ -50,4 +53,4 @@ response = model.invoke(
 print(response)
 
 # Display the response using the utility class
-styler.print_markdown_panel(response.text, title="Parrot Talk Response")
+styler.print_markdown_panel(response.text, title=f"Parrot Talk Response ({seed})")
