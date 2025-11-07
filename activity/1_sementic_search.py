@@ -5,6 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from utility.Console.VirtualMarkdownBoard import VirtualMarkdownBoard
 
 md = VirtualMarkdownBoard()
+md.topic("Semantic Search")
 if not MODEL_QUEN_EMBEDDINGS:
     raise ValueError("MODEL_QUEN_EMBEDDINGS must be set in constants.config")
 if not ROOT_DIR:
@@ -59,11 +60,12 @@ embeddings = OllamaEmbeddings(  # type: ignore[reportGeneralTypeIssues]
 # Test the embeddings
 fact_embedding = embeddings.embed_documents(month_facts)  # type: ignore[reportGeneralTypeIssues]
 question_embedding = embeddings.embed_query(question)  # type: ignore[reportGeneral]
-print(len(fact_embedding), len(question_embedding))
+md.text(
+    f"Fact embedding length: {len(fact_embedding)}, Question embedding length: {len(question_embedding)}"
+)
 
 # styler.print_markdown_panel(json.dumps(query_result))
 
-md.topic("Semantic Search")
 
 result = cosine_similarity(np.array([question_embedding]), np.array(fact_embedding))
 
