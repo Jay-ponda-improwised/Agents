@@ -22,6 +22,7 @@ from utility.Console.Component.CodeBlock.Base import CodeBlock
 from utility.Console.Component.Table.Base import TableComponent
 from utility.Console.Component.List.Base import ListComponent
 from utility.Console.Component.Line.Base import LineComponent
+from utility.Console.Component.Input.Base import Input
 from utility.Console.MarkdownComponentMissingError import MarkdownComponentMissingError
 
 
@@ -155,6 +156,19 @@ class VirtualMarkdownBoard:
         """
         return self._handle_add_or_replace(
             LineComponent(style, character), component_id
+        )
+
+    def input(
+        self,
+        prompt_text: str,
+        password: bool = False,
+        component_id: Optional[str] = None,
+    ) -> str:
+        """
+        Adds or replaces an input component.
+        """
+        return self._handle_add_or_replace(
+            Input(prompt_text, password), component_id
         )
 
     def replace_component(self, component_id: str, new_component: MarkdownComponent):

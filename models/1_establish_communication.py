@@ -27,7 +27,7 @@ model = ChatOpenAI(
     model=MODEL_QUEN,
     api_key=SecretStr(KEY),
     base_url=HOST,
-    temperature=0.7,
+    temperature=1.7,  # bigger value means more randomness
     seed=seed,
     timeout=MAX_TIME_TO_WAIT,
     max_retries=RETRIES,
@@ -41,7 +41,7 @@ response = model.invoke(
         Question:
         - Why do parrots talk?
         settings (must follow!):
-        - in max 2 lines.
+        - in max 3 lines.
         - giving replay in raw markdown format.
         - it should be in json format (json format should be structured and valid).
         - key will be topic and value will be the reason. (I.E. biological: he has something...)

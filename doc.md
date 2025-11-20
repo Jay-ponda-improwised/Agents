@@ -278,6 +278,46 @@ board.take_snapshot("Mixed Data List Demo")
 ╰────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
+## Input
+
+A component for taking user input.
+
+```python
+board = VirtualMarkdownBoard()
+board.input("Please enter your name")
+board.take_snapshot("Input Demo")
+```
+
+**Output:**
+
+```
+Please enter your name: John
+╭─ Input Demo ───────────────────────────────────────────────────────────────────────────╮
+│                                                                                        │
+│  Please enter your name: John                                                          │
+│                                                                                        │
+╰────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+### Password Input
+
+```python
+board = VirtualMarkdownBoard()
+board.input("Enter password", password=True)
+board.take_snapshot("Password Input Demo")
+```
+
+**Output:**
+
+```
+Enter password: ****
+╭─ Password Input Demo ──────────────────────────────────────────────────────────────────╮
+│                                                                                        │
+│  Enter password: ****                                                                  │
+│                                                                                        │
+╰────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
 ## LineComponent
 
 A horizontal line.
