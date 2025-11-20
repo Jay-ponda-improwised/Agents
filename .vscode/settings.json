@@ -2,6 +2,7 @@
     "cSpell.words": [
         "DEEPSEEK",
         "dotenv",
+        "fastapi",
         "healthcheck",
         "huggingface",
         "kwargs",
@@ -16,6 +17,7 @@
         "renderables",
         "septem",
         "Sextilis",
-        "Shellow"
+        "Shellow",
+        "uvicorn"
     ]
 }
