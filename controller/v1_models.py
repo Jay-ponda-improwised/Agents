@@ -21,4 +21,3 @@ async def demoChat(question: str):
     except Exception as e:
         logger.error(f"Error in demoChat endpoint: {e}", exc_info=True)
         return {"error": str(e)}, 500
-

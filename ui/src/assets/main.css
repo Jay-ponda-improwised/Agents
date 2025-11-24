@@ -1,0 +1,27 @@
+
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+#app {
+  max-width: 100%; /* Adjust for full width layout */
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}n

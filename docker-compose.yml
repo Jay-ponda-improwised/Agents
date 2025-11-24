@@ -20,6 +20,49 @@ services:
       retries: 5
       start_period: 120s
 
+  api:
+    build: .
+    container_name: api-server
+    ports:
+      - "33001:33001"
+    environment:
+      - ALLOWED_ORIGINS=http://172.19.0.4:5173,http://localhost:5173
+      - OLLAMA_HOST=http://ollama:11434
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    command: ["python", "main.py"]
+    volumes:
+      - .:/app
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:33001/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  frontend:
+    build: ./ui
+    container_name: frontend-app
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://api:33001
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./ui:/app
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5173 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
 volumes:
   ollama_data:
     name: ollama_qwen_data

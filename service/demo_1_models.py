@@ -58,7 +58,7 @@ class DemoModel:
                 """
             )
             logger.info("Successfully received response from ChatOpenAI.")
-            return response.text
+            return response.content
         except Exception as e:
             logger.error(f"Error during ChatOpenAI invocation: {e}", exc_info=True)
             raise

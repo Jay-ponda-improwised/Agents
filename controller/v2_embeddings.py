@@ -1,5 +1,7 @@
 import logging
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from typing import List, Optional
 from service.demo_2_embeddings import DemoEmbeddingsService
 
 logger = logging.getLogger(__name__)
@@ -11,6 +13,11 @@ router = APIRouter(
 )
 
 embeddings_service = DemoEmbeddingsService()
+
+
+class SearchRequest(BaseModel):
+    query: str
+    documents: Optional[List[str]] = None
 
 
 @router.post("/convert-to-embeddings")
@@ -44,7 +51,9 @@ async def get_embeddings_from_documents_route(documents: list[str]):
 
 
 @router.post("/search")
-async def embeddings_search_route(query: str, documents: list[str]):
+async def embeddings_search_route(request: SearchRequest):
+    query = request.query
+    documents = request.documents or []
     logger.info(f"embeddings_search_route called with query: '{query}' and {len(documents)} documents.")
     try:
         month_facts = [
