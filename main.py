@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware # Import CORSMiddleware
 from controller.v1_models import router as v1_models
 from controller.v2_embeddings import router as v2_embeddings
+from controller.users import router as users_router
+from middleware.timing_middleware import TimingMiddleware
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,8 +30,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(TimingMiddleware)
+
 app.include_router(v1_models)
 app.include_router(v2_embeddings)
+app.include_router(users_router)
 
 
 @app.get("/")

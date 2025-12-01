@@ -1,0 +1,45 @@
+:root {
+  /* Light theme colors - Modern palette */
+  --background-color: #ffffff;
+  --text-color: #0f172a;
+  --sidebar-bg: #f8fafc;
+  --sidebar-border: #e2e8f0;
+  --sidebar-link: #64748b;
+  --sidebar-link-active: #0ea5e9; /* Modern blue */
+  --main-border: #e2e8f0;
+  --input-border: #cbd5e1;
+  --input-bg: #ffffff;
+  --button-bg: #0ea5e9; /* Modern blue */
+  --button-text: #ffffff;
+  --button-hover: #0284c7; /* Slightly darker blue */
+  --button-disabled: #94a3b8;
+  --response-bg: #f1f5f9;
+  --error-bg: #fef2f2;
+  --error-text: #dc2626;
+  --success-bg: #f0fdf4;
+  --success-text: #16a34a;
+  --background-color-secondary: #f0f4f8; /* Added for pagination buttons */
+}
+
+.dark {
+  /* Dark theme colors - Modern palette */
+  --background-color: #0f172a;
+  --text-color: #f1f5f9;
+  --sidebar-bg: #1e293b;
+  --sidebar-border: #334155;
+  --sidebar-link: #94a3b8;
+  --sidebar-link-active: #38bdf8; /* Modern light blue */
+  --main-border: #334155;
+  --input-border: #475569;
+  --input-bg: #1e293b;
+  --button-bg: #0ea5e9; /* Modern blue */
+  --button-text: #ffffff;
+  --button-hover: #38bdf8; /* Lighter blue for hover */
+  --button-disabled: #475569;
+  --response-bg: #1e293b;
+  --error-bg: #450a0a;
+  --error-text: #fecaca;
+  --success-bg: #052e16;
+  --success-text: #bbf7d0;
+  --background-color-secondary: #1a202c; /* Added for pagination buttons */
+}

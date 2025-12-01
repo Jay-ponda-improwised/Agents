@@ -1,150 +1,89 @@
 <template>
-  <div class="model-demo">
-    <h2>Model Demo</h2>
-    <div class="input-section">
-      <label for="question">Question:</label>
-      <input 
-        id="question" 
-        v-model="question" 
-        placeholder="Enter your question" 
-        @keyup.enter="submitQuestion"
-      />
-      <button @click="submitQuestion" :disabled="loading">
+  <div class="section">
+    <div class="header-row">
+      <h2 class="section-header">Model Demo</h2>
+      <button @click="submitQuestion" :disabled="loading" class="btn">
         {{ loading ? 'Loading...' : 'Submit' }}
       </button>
     </div>
-    
+    <div class="form-group">
+      <label for="question" class="form-label">Question:</label>
+      <input id="question" v-model="question" placeholder="Enter your question" @keyup.enter="submitQuestion"
+        class="input" />
+    </div>
+
     <div v-if="response" class="response-section">
-      <h3>Response:</h3>
+      <ResponseTimeDisplay :response-time="responseTimeModelDemo" />
+      <h3 class="response-section-header">Response:</h3>
       <div v-html="formattedResponse"></div>
     </div>
-    
+
     <div v-if="error" class="error-section">
-      <p class="error">Error: {{ error }}</p>
+      <p class="error-text">Error: {{ error }}</p>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue';
 import { marked } from 'marked';
+import ResponseTimeDisplay from './ResponseTimeDisplay.vue';
 
-export default {
-  name: 'ModelDemoComponent',
-  data() {
-    return {
-      question: '',
-      response: null,
-      error: null,
-      loading: false
-    };
-  },
-  computed: {
-    formattedResponse() {
-      if (!this.response || !this.response.message) {
-        return '';
-      }
-      let message = this.response.message;
-      // If message is an object with a text property (like AIMessage), use that
-      if (typeof message === 'object' && message.text) {
-        message = message.text;
-      }
-      if (typeof message === 'string') {
-        return marked(message);
-      }
-      if (typeof message === 'object') {
-        const jsonString = '```json\n' + JSON.stringify(message, null, 2) + '\n```';
-        return marked(jsonString);
-      }
-      return '';
+const question = ref('');
+const response = ref(null);
+const error = ref(null);
+const loading = ref(false);
+const responseTimeModelDemo = ref(null);
+
+const formattedResponse = computed(() => {
+  if (!response.value || !response.value.message) {
+    return '';
+  }
+  let message = response.value.message;
+  // If message is an object with a text property (like AIMessage), use that
+  if (typeof message === 'object' && message.text) {
+    message = message.text;
+  }
+  if (typeof message === 'string') {
+    return marked(message);
+  }
+  if (typeof message === 'object') {
+    const jsonString = '```json\n' + JSON.stringify(message, null, 2) + '\n```';
+    return marked(jsonString);
+  }
+  return '';
+});
+
+const submitQuestion = async () => {
+  if (!question.value.trim()) return;
+
+  loading.value = true;
+  response.value = null;
+  error.value = null;
+  responseTimeModelDemo.value = null;
+
+  try {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:33001';
+    const resp = await fetch(`${apiUrl}/video-1/?question=${encodeURIComponent(question.value)}`, {
+      credentials: 'include'
+    });
+    const data = await resp.json();
+    console.log(data.message);
+    if (!resp.ok) {
+      throw new Error(data.error || 'An error occurred');
     }
-  },
-  methods: {
-    async submitQuestion() {
-      if (!this.question.trim()) return;
-      
-      this.loading = true;
-      this.response = null;
-      this.error = null;
-      
-      try {
-        const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:33001';
-        const response = await fetch(`${apiUrl}/video-1/?question=${encodeURIComponent(this.question)}`, {
-          credentials: 'include'
-        });
-        const data = await response.json();
-        console.log(data.message);
-        if (!response.ok) {
-          throw new Error(data.error || 'An error occurred');
-        }
-        this.response = data;
-      } catch (err) {
-        this.error = err.message || 'An error occurred';
-      } finally {
-        this.loading = false;
-      }
+    response.value = data;
+    if (data.meta && data.meta.processTime) {
+      responseTimeModelDemo.value = data.meta.processTime;
     }
+  } catch (err) {
+    error.value = err.message || 'An error occurred';
+  } finally {
+    loading.value = false;
   }
 };
 </script>
 
-<style scoped>
-.model-demo {
-  width: 100%; /* Ensure it takes full width of parent */
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-family: Arial, sans-serif;
-}
-
-.input-section {
-  margin-bottom: 20px;
-}
-
-.input-section label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.input-section input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.input-section button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.input-section button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.response-section {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-}
-
-.error-section {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #f8d7da;
-  border-radius: 4px;
-}
-
-.error {
-  color: #721c24;
-  margin: 0;
-}
+<style>
+/* Styles are now centralized in assets/css/common.css */
 </style>

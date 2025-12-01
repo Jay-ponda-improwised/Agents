@@ -1,1 +1,8 @@
+# .dockerignore
+
+.git
+.vscode
+__pycache__
+venv/
+*.pyc
 lang-env

@@ -1,0 +1,20 @@
+.response-time-display {
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px; /* Add some space below */
+  font-size: 0.85em;
+  color: var(--text-color-light); /* Use a lighter text color */
+}
+
+.response-time-label {
+  font-weight: 500;
+  color: var(--text-color-muted);
+}
+
+.response-time-value {
+  font-weight: 600;
+  color: var(--primary-color); /* Use primary color for value */
+}

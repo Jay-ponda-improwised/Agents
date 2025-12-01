@@ -1,21 +1,26 @@
 
 # Use an official Python runtime as a parent image
-FROM python:3.9-slim-bullseye
+FROM continuumio/miniconda3:latest
+
+RUN conda install -n base -c conda-forge mamba -y
+
+RUN apt-get update && apt-get install -y curl postgresql-client && rm -rf /var/lib/apt/lists/*
+
+
 
 # Set the working directory in the container
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# Copy and install environment
+COPY environment.yml .
+RUN mamba env create -f environment.yml
 
-# Install uv
-RUN pip install uv
-
-# Install any needed packages specified in requirements.txt using uv
-COPY requirements.txt .
-RUN uv pip install --system -r requirements.txt
+# Activate the environment and install remaining packages with uv
+SHELL ["conda", "run", "-n", "langchain_env", "/bin/bash", "-c"]
+ENV PATH="/opt/conda/envs/langchain_env/bin:$PATH"
 
 # Copy the current directory contents into the container at /app
 COPY . .
 
 # Run the FastAPI application
-CMD ["python", "main.py"]
+CMD ["conda", "run", "-n", "langchain_env", "python", "main.py"]

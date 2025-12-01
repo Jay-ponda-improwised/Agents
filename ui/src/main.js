@@ -1,13 +1,17 @@
 import './assets/main.css'
+import './assets/css/layout.css'
+import './assets/css/embeddings.css'
+import './assets/css/response-time-display.css'
 
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 
 // Import components
-import EmbeddingsComponent from './components/EmbeddingsComponent.vue'
+import EmbeddingsComponent from './components/Embeddings/index.vue'
 import ModelDemoComponent from './components/ModelDemoComponent.vue'
 import CommonLayout from './components/Layout.vue' // Import the new layout
+import HistoryComponent from './components/History.vue'
 
 const routes = [
   {
@@ -16,6 +20,7 @@ const routes = [
     children: [
       { path: '/EmbeddingsComponent', component: EmbeddingsComponent },
       { path: '/ModelDemoComponent', component: ModelDemoComponent },
+      { path: '/History', component: HistoryComponent },
       { path: '/', redirect: '/EmbeddingsComponent' } // Default route
     ]
   }

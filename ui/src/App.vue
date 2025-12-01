@@ -2,10 +2,8 @@
   <router-view />
 </template>
 
-<script>
-export default {
-  name: 'App',
-};
+<script setup>
+// This component doesn't need any reactive state, so the script setup is minimal
 </script>
 
 <style scoped>
