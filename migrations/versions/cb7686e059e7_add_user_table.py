@@ -1,17 +1,17 @@
-"""Initial migration - create users table
+"""add user table
 
-Revision ID: 001
-Revises:
-Create Date: 2025-12-01 10:00:00.000000
+Revision ID: cb7686e059e7
+Revises: cae28a432591
+Create Date: 2025-12-01 11:14:59.447592
 
 """
 from alembic import op
 import sqlalchemy as sa
-from datetime import datetime
+
 
 # revision identifiers, used by Alembic.
-revision = '001'
-down_revision = None
+revision = 'cb7686e059e7'
+down_revision = 'cae28a432591'
 branch_labels = None
 depends_on = None
 

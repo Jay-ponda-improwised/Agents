@@ -5,6 +5,7 @@ from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 import json
+from typing import Any, cast
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,7 @@ class TimingMiddleware(BaseHTTPMiddleware):
             try:
                 # Read the response body
                 body = b""
-                async for chunk in response.body_iterator:
+                async for chunk in cast(Any, response).body_iterator:
                     body += chunk
 
                 # Parse the JSON response

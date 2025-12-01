@@ -7,6 +7,8 @@ from alembic import context
 
 from config.database import Base
 from models.user import User
+from models.chat.model import Model
+from models.chat.history import ChatHistory
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
