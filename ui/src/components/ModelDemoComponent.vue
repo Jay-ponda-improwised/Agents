@@ -1,19 +1,20 @@
 <template>
   <div class="section">
-    <div class="header-row">
-      <h2 class="section-header">Model Demo</h2>
-      <button @click="submitQuestion" :disabled="loading" class="btn">
-        {{ loading ? 'Loading...' : 'Submit' }}
-      </button>
-    </div>
+    <h2 class="section-header">Model Demo</h2>
     <div class="form-group">
       <label for="question" class="form-label">Question:</label>
       <input id="question" v-model="question" placeholder="Enter your question" @keyup.enter="submitQuestion"
         class="input" />
     </div>
 
-    <div v-if="response" class="response-section">
+    <div class="action-row">
       <ResponseTimeDisplay :response-time="responseTimeModelDemo" />
+      <button @click="submitQuestion" :disabled="loading" class="btn">
+        {{ loading ? 'Loading...' : 'Submit' }}
+      </button>
+    </div>
+
+    <div v-if="response" class="response-section">
       <h3 class="response-section-header">Response:</h3>
       <div v-html="formattedResponse"></div>
     </div>

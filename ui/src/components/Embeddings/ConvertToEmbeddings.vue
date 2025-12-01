@@ -1,19 +1,20 @@
 <template>
   <div class="section">
-    <div class="header-row">
-      <h3 class="section-header">Convert Text to Embeddings</h3>
-      <button @click="convertToEmbeddings" :disabled="loadingConvertToEmbeddings" class="btn">
-        {{ loadingConvertToEmbeddings ? 'Converting...' : 'Convert' }}
-      </button>
-    </div>
+    <h3 class="section-header">Convert Text to Embeddings</h3>
     <div class="form-group">
       <label for="textToConvert" class="form-label">Text:</label>
       <textarea id="textToConvert" v-model="textToConvert" placeholder="Enter text to convert to embeddings"
         class="textarea"></textarea>
     </div>
 
-    <div v-if="responseConvertToEmbeddings">
+    <div class="action-row">
       <ResponseTimeDisplay :response-time="responseTimeConvertToEmbeddings" />
+      <button @click="convertToEmbeddings" :disabled="loadingConvertToEmbeddings" class="btn">
+        {{ loadingConvertToEmbeddings ? 'Converting...' : 'Convert' }}
+      </button>
+    </div>
+
+    <div v-if="responseConvertToEmbeddings">
       <TruncatedTextDisplay :content="JSON.stringify(responseConvertToEmbeddings.embeddings, null, 2)"
         :max-lines="100" />
     </div>

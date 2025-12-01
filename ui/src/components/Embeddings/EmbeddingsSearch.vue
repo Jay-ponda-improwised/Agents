@@ -1,11 +1,6 @@
 <template>
   <div class="section">
-    <div class="header-row">
-      <h3 class="section-header">Embeddings Search</h3>
-      <button @click="performEmbeddingsSearch" :disabled="loadingEmbeddingsSearch" class="btn">
-        {{ loadingEmbeddingsSearch ? 'Searching...' : 'Search' }}
-      </button>
-    </div>
+    <h3 class="section-header">Embeddings Search</h3>
     <div class="form-group">
       <label for="searchQuery" class="form-label">Query:</label>
       <input
@@ -24,8 +19,14 @@
       ></textarea>
     </div>
 
-    <div v-if="responseEmbeddingsSearch">
+    <div class="action-row">
       <ResponseTimeDisplay :response-time="responseTimeSearch" />
+      <button @click="performEmbeddingsSearch" :disabled="loadingEmbeddingsSearch" class="btn">
+        {{ loadingEmbeddingsSearch ? 'Searching...' : 'Search' }}
+      </button>
+    </div>
+
+    <div v-if="responseEmbeddingsSearch">
       <TruncatedTextDisplay :content="JSON.stringify(responseEmbeddingsSearch.search_results, null, 2)" :max-lines="100" />
     </div>
 

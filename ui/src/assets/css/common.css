@@ -202,3 +202,26 @@ a:hover,
   margin: 0;
   flex-grow: 1;
 }
+
+/* Action row for response time and button layout */
+.action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Ensure response time stays on left and button stays on right */
+.action-row > :first-child {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.action-row > :last-child {
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin-left: auto;
+}

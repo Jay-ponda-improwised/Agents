@@ -1,11 +1,6 @@
 <template>
   <div class="section">
-    <div class="header-row">
-      <h3 class="section-header">Get Embeddings from Documents</h3>
-      <button @click="getEmbeddingsFromDocuments" :disabled="loadingGetEmbeddingsFromDocuments" class="btn">
-        {{ loadingGetEmbeddingsFromDocuments ? 'Processing...' : 'Process Documents' }}
-      </button>
-    </div>
+    <h3 class="section-header">Get Embeddings from Documents</h3>
     <div class="form-group">
       <label class="form-label">Documents (one per line):</label>
       <textarea
@@ -16,8 +11,14 @@
       ></textarea>
     </div>
 
-    <div v-if="responseGetEmbeddingsFromDocuments">
+    <div class="action-row">
       <ResponseTimeDisplay :response-time="responseTimeGetEmbeddingsFromDocuments" />
+      <button @click="getEmbeddingsFromDocuments" :disabled="loadingGetEmbeddingsFromDocuments" class="btn">
+        {{ loadingGetEmbeddingsFromDocuments ? 'Processing...' : 'Process Documents' }}
+      </button>
+    </div>
+
+    <div v-if="responseGetEmbeddingsFromDocuments">
       <TruncatedTextDisplay :content="JSON.stringify(responseGetEmbeddingsFromDocuments.document_embeddings, null, 2)" :max-lines="100" />
     </div>
 
