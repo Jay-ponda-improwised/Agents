@@ -15,6 +15,7 @@ class TimingMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next):
+        logger.info(f"Request received for route: {request.method} {request.url.path}")
         # Capture request time in UTC
         request_time = datetime.now(timezone.utc).isoformat()
         start_time = time.time()
@@ -65,6 +66,7 @@ class TimingMiddleware(BaseHTTPMiddleware):
                         response_data["meta"]["requestTime"] = request_time
                         response_data["meta"]["responseTime"] = response_time
                         response_data["meta"]["processTime"] = round(process_time, 4)
+                        # Model information will be preserved if already in response_data["meta"]
                     else:
                         # If response is not a dict, wrap it
                         response_data = {

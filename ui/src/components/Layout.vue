@@ -10,6 +10,7 @@
           <ol>
             <li><router-link to="/ModelDemoComponent">ModelDemoComponent</router-link></li>
             <li><router-link to="/EmbeddingsComponent">EmbeddingsComponent</router-link></li>
+            <li><router-link to="/PromptsComponent">PromptsComponent</router-link></li>
           </ol>
         </nav>
       </div>

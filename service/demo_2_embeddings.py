@@ -1,7 +1,6 @@
 import logging
-from constants.config import OLLAMA_HOST, MODEL_QUEN_EMBEDDINGS, ROOT_DIR
-from langchain_ollama import OllamaEmbeddings
-from langchain_huggingface.embeddings import HuggingFaceEmbeddings
+from config.enums import ModelName
+from service.model_service import get_model_service
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -29,34 +28,17 @@ class DemoEmbeddingsService:
         "Pet parrots often talk to entertain themselves and gain attention from their human companions.",
     ]
 
-    # Initialize Ollama embeddings
-    @property
-    def ollama_embeddings(self) -> OllamaEmbeddings:
-        logger.info("Accessing ollama_embeddings property.")
-        if not MODEL_QUEN_EMBEDDINGS:
-            logger.error("MODEL_QUEN_EMBEDDINGS must be set in constants.config")
-            raise ValueError("MODEL_QUEN_EMBEDDINGS must be set in constants.config")
-        if not ROOT_DIR:
-            logger.error("ROOT_DIR must be set in constants.config")
-            raise ValueError("ROOT_DIR must be set in constants.config")
+    def __init__(self):
+        logger.info("Initializing DemoEmbeddingsService")
+        self.model_service = get_model_service()
+        self.ollama_embeddings = self.model_service.get_model(ModelName.OLLAMA_EMBEDDINGS)
+        self.huggingface_embeddings = self.model_service.get_model(ModelName.HUGGINGFACE_EMBEDDINGS)
 
-        logger.debug(f"Initializing OllamaEmbeddings with model={MODEL_QUEN_EMBEDDINGS}, base_url={OLLAMA_HOST}")
-        return OllamaEmbeddings(  # type: ignore[reportGeneralTypeIssues]
-            model=MODEL_QUEN_EMBEDDINGS,
-            base_url=OLLAMA_HOST,
-        )
+        if not self.ollama_embeddings:
+            raise RuntimeError(f"Failed to load ollama model: {ModelName.OLLAMA_EMBEDDINGS.value}")
+        if not self.huggingface_embeddings:
+            raise RuntimeError(f"Failed to load huggingface model: {ModelName.HUGGINGFACE_EMBEDDINGS.value}")
 
-    @property
-    def huggingface_embeddings(self) -> HuggingFaceEmbeddings:
-        logger.info("Accessing huggingface_embeddings property.")
-        logger.debug(f"Initializing HuggingFaceEmbeddings with model_name='sentence-transformers/all-MiniLM-L6-v2', cache_folder={ROOT_DIR + '/.cache'}")
-        return HuggingFaceEmbeddings(  # type: ignore[reportGeneralTypeIssues]
-            model_name="sentence-transformers/all-MiniLM-L6-v2",
-            cache_folder=ROOT_DIR + "/.cache",
-            show_progress=True,
-            model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": True},
-        )
 
     def convertToEmbeddings(self, text: str):
         logger.info(f"convertToEmbeddings method called with text: {text[:50]}...") # Log first 50 chars

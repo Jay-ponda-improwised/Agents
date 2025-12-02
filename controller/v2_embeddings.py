@@ -26,7 +26,12 @@ async def convert_to_embeddings_route(text: str):
     try:
         result = embeddings_service.convertToEmbeddings(text)
         logger.info("convert_to_embeddings_route successful.")
-        return {"embeddings": result}
+        return {
+            "embeddings": result,
+            "meta": {
+                "model": "mxbai-embed-large"
+            }
+        }
     except ValueError as e:
         logger.error(f"ValueError in convert_to_embeddings_route: {e}", exc_info=True)
         raise HTTPException(status_code=400, detail=str(e))
@@ -41,7 +46,12 @@ async def get_embeddings_from_documents_route(documents: list[str]):
     try:
         result = embeddings_service.getEmbeddingsFromDocuments(documents)
         logger.info("get_embeddings_from_documents_route successful.")
-        return {"document_embeddings": result}
+        return {
+            "document_embeddings": result,
+            "meta": {
+                "model": "mxbai-embed-large"
+            }
+        }
     except ValueError as e:
         logger.error(f"ValueError in get_embeddings_from_documents_route: {e}", exc_info=True)
         raise HTTPException(status_code=400, detail=str(e))
@@ -89,7 +99,12 @@ async def embeddings_search_route(request: SearchRequest):
             documents if len(documents) > 0 else month_facts,
         )
         logger.info("embeddings_search_route successful.")
-        return {"search_results": result}
+        return {
+            "search_results": result,
+            "meta": {
+                "model": "sentence-transformers/all-MiniLM-L6-v2"
+            }
+        }
     except ValueError as e:
         logger.error(f"ValueError in embeddings_search_route: {e}", exc_info=True)
         raise HTTPException(status_code=400, detail=str(e))

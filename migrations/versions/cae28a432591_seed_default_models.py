@@ -8,7 +8,7 @@ Create Date: 2025-12-01 10:32:54.243110
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker, declarative_base
-from models.chat.model import Model
+from models.model import Model
 import os
 
 

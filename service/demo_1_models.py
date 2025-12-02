@@ -1,15 +1,9 @@
 import logging
-from langchain_openai import ChatOpenAI
-from pydantic import SecretStr
 import random
-from constants.config import (
-    KEY,
-    HOST,
-    MODEL_QUEN,
-    MAX_TIME_TO_WAIT,
-    RETRIES,
-    MAX_TOKENS,
-)
+from typing import cast
+from langchain_openai import ChatOpenAI
+from service.model_service import get_model_service
+from config.enums import ModelName
 
 logger = logging.getLogger(__name__)
 
@@ -19,30 +13,16 @@ class DemoModel:
     def chat(question: str):
         logger.info(f"DemoModel.chat method called with question: {question}")
 
-        if not MODEL_QUEN:
-            logger.error("MODEL_QUEN must be set in constants.config")
-            raise ValueError("MODEL_QUEN must be set in constants.config")
-        if not KEY:
-            logger.error("KEY must be set in constants.config")
-            raise ValueError("KEY must be set in constants.config")
-
+        model_service = get_model_service()
         seed = random.randint(0, 999999)
         logger.debug(f"Using seed for ChatOpenAI: {seed}")
-        logger.debug(f"ChatOpenAI config: model={MODEL_QUEN}, host={HOST}, timeout={MAX_TIME_TO_WAIT}, retries={RETRIES}, max_tokens={MAX_TOKENS}")
-
+        
         try:
-            model = ChatOpenAI(
-                model=MODEL_QUEN,
-                api_key=SecretStr(KEY),
-                base_url=HOST,
-                temperature=1.7,  # bigger value means more randomness
-                seed=seed,
-                timeout=MAX_TIME_TO_WAIT,
-                max_retries=RETRIES,
-                max_completion_tokens=MAX_TOKENS,
-                verbose=True,
-                verbosity="medium",
-            )
+            model_instance = model_service.get_model(ModelName.OPENAI_CHAT, seed=seed)
+            if not model_instance:
+                raise RuntimeError("Failed to get model from ModelService")
+
+            model = cast(ChatOpenAI, model_instance)
 
             response = model.invoke(
                 f"""
