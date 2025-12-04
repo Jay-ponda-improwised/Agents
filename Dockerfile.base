@@ -1,0 +1,21 @@
+# Base Dockerfile for conda environment
+FROM continuumio/miniconda3:latest
+
+# Install mamba for faster package installation
+RUN conda install -n base -c conda-forge mamba -y
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y curl postgresql-client && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy environment file and create conda environment
+COPY environment.yml .
+RUN mamba env create -f environment.yml && \
+    conda clean --all
+
+# Update PATH to include the conda environment
+ENV PATH=/opt/conda/envs/langchain_env/bin:$PATH
+
+# This image can be tagged as langchain-base and used as a base for other images

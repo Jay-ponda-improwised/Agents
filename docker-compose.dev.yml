@@ -1,35 +1,6 @@
+version: '3.8'
+
 services:
-  # ollama:
-  #   image: ollama/ollama:0.12.9
-  #   container_name: ollama-server
-  #   ports:
-  #     - "11434:11434"
-  #   environment:
-  #     - OLLAMA_HOST=0.0.0.0
-  #     - OLLAMA_DEBUG=true
-  #     - OLLAMA_MAX_LOADED_MODELS=1
-  #     - OLLAMA_KEEP_ALIVE=5m
-  #   volumes:
-  #     - ollama_data:/root/.ollama
-  #   restart: unless-stopped
-  #   # Remove healthcheck temporarily to test
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "curl -f http://localhost:11434 || exit 1"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #     start_period: 120s
-
-  # qdrant:
-  #   image: qdrant/qdrant:latest
-  #   container_name: qdrant-db
-  #   ports:
-  #     - "6333:6333"
-  #     - "6334:6334"
-  #   volumes:
-  #     - qdrant_storage:/qdrant/storage
-  #   restart: unless-stopped
-
   postgres:
     image: postgres:15-alpine
     container_name: postgres-db
@@ -49,7 +20,7 @@ services:
       retries: 5
 
   postgres-migration:
-    build: .
+    image: langchain-base
     container_name: postgres-migration
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/myapp
@@ -61,24 +32,18 @@ services:
     command: ["./scripts/migrate.sh"]
 
   api:
-    build: .
+    image: langchain-base
     container_name: api-server
     ports:
       - "33001:33001"
     environment:
-      # - ALLOWED_ORIGINS=http://172.19.0.4:5173,http://localhost:5173
-      # - OLLAMA_HOST=http://ollama:11434
-      # - QDRANT_HOST=http://qdrant:6333
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/myapp
+      - APP_HOST=0.0.0.0
+      - APP_PORT=33001
     depends_on:
       postgres-migration:
         condition: service_completed_successfully
-      # ollama:
-      #   condition: service_started
-      # qdrant:
-      #   condition: service_started
     restart: unless-stopped
-    command: ["conda", "run", "-n", "langchain_env", "python", "main.py"]
     volumes:
       - .:/app
     healthcheck:
@@ -87,6 +52,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
+    command: ["bash", "-c", "source /opt/conda/etc/profile.d/conda.sh && conda activate langchain_env && uvicorn main:app --host 0.0.0.0 --port 33001"]
 
   frontend:
     build: ./ui
@@ -110,9 +76,5 @@ services:
     command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 
 volumes:
-  ollama_data:
-    name: ollama_qwen_data
-  qdrant_storage:
-    name: qdrant_data
   postgres_data:
     name: postgres_data

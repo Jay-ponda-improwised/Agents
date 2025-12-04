@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: myapp
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-migration:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    container_name: postgres-migration
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/myapp
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["./scripts/migrate.sh"]
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    container_name: api-server
+    ports:
+      - "33001:33001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/myapp
+      - APP_HOST=0.0.0.0
+      - APP_PORT=33001
+    depends_on:
+      postgres-migration:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:33001/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  frontend:
+    build: ./ui
+    container_name: frontend-app
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://api:33001
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5173 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  postgres_data:
+    name: postgres_data

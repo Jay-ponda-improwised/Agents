@@ -50,8 +50,3 @@ async def read_root():
 @app.get("/healthz")
 async def health_check():
     return {"status": "ok"}
-
-if __name__ == "__main__":
-    import uvicorn
-    logger.info("Starting FastAPI application with Uvicorn...") # Add log statement
-    uvicorn.run("main:app", host="0.0.0.0", port=33001, reload=True, log_config=LOGGING_CONFIG)
