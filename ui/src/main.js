@@ -12,7 +12,7 @@ import App from './App.vue'
 import EmbeddingsComponent from './components/Embeddings/index.vue'
 import ModelDemoComponent from './components/ModelDemoComponent.vue'
 import PromptsComponent from './components/Prompts/index.vue'
-import CommonLayout from './components/Layout.vue' // Import the new layout
+import CommonLayout from './layout/Layout.vue' // Import the new layout
 import HistoryComponent from './components/History.vue'
 
 const routes = [

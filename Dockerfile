@@ -23,4 +23,4 @@ ENV PATH="/opt/conda/envs/langchain_env/bin:$PATH"
 COPY . .
 
 # Run the FastAPI application
-CMD ["conda", "run", "-n", "langchain_env", "python", "main.py"]
+CMD ["conda", "run", "-n", "langchain_env", "python", "-u", "main.py"]

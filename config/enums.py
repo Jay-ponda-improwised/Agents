@@ -12,3 +12,5 @@ class ModelName(str, Enum):
     OLLAMA_EMBEDDINGS = MODEL_QUEN_EMBEDDINGS
     HUGGINGFACE_EMBEDDINGS = "sentence-transformers/all-MiniLM-L6-v2"
     OPENAI_CHAT = MODEL_QUEN
+    TRANSFORMERS_SUMMARIZATION = "document-question-answering"
+    HUGGINGFACE_API_QUESTION_ANSWERING = "huggingface-api-question-answering"
