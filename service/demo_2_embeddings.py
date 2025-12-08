@@ -1,6 +1,6 @@
 import logging
 from config.enums import ModelName
-from service.model_service import get_model_service
+from utils.model_service import init_ollamaEmbeddings, init_huggingFaceEmbeddings
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -30,9 +30,11 @@ class DemoEmbeddingsService:
 
     def __init__(self):
         logger.info("Initializing DemoEmbeddingsService")
-        self.model_service = get_model_service()
-        self.ollama_embeddings = self.model_service.get_model(ModelName.OLLAMA_EMBEDDINGS)
-        self.huggingface_embeddings = self.model_service.get_model(ModelName.HUGGINGFACE_EMBEDDINGS)
+        ollama_container = init_ollamaEmbeddings()
+        huggingface_container = init_huggingFaceEmbeddings()
+
+        self.ollama_embeddings = ollama_container.model
+        self.huggingface_embeddings = huggingface_container.model
 
         if not self.ollama_embeddings:
             raise RuntimeError(f"Failed to load ollama model: {ModelName.OLLAMA_EMBEDDINGS.value}")

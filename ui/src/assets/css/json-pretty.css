@@ -1,0 +1,20 @@
+.json-renderer .vjs-tree-node:hover {
+  background-color: color-mix(in srgb, var(--background-color) 95%, white 5%);
+}
+
+.json-renderer .vjs-tree {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+.json-renderer .vjs-key {
+  color: var(--sidebar-link);
+}
+.json-renderer .vjs-value__string {
+  color: var(--text-color);
+}
+.json-renderer .vjs-value__number {
+  color: var(--sidebar-link-active);
+}
+.json-renderer .vjs-value__boolean {
+  color: var(--sidebar-link-active);
+}

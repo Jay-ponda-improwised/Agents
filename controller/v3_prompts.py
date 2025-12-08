@@ -54,3 +54,32 @@ async def summarize_route(request: SummarizeRequest):
     except Exception as e:
         logger.error(f"Internal server error in summarize_route: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Internal server error: {e}")
+
+
+@router.post("/summarize-v2")
+async def summarize_route_v2(request: SummarizeRequest):
+    content = request.content
+
+    logger.info(f"summarize_route_v2 called with content: '{content[:50]}...'")
+
+    try:
+        result = prompt_service.getSummarizePromptV2(
+            max_length=request.responseLength,
+            response_format=request.responseFormat,
+            content=content,
+        )
+        logger.info("summarize_route_v2 successful.")
+        return {
+            "summary": result,
+            "meta": {
+                "model": "gpt-3.5-turbo"  # or whatever model is being used
+            }
+        }
+    except ValueError as e:
+        logger.error(f"ValueError in summarize_route_v2: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Internal server error in summarize_route_v2: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Internal server error: {e}")
+
+

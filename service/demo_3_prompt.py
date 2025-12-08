@@ -1,7 +1,7 @@
 import logging
 from enum import Enum
 from langchain_core.prompts import PromptTemplate
-from service.model_service import get_model_service
+from utils.model_service import init_openAIChat
 from config.enums import ModelName
 from langchain_openai import ChatOpenAI
 from typing import cast
@@ -83,8 +83,8 @@ class DemoPromptService:
 
     def __init__(self):
         logger.info("DemoPromptService initialized.")
-        model_service = get_model_service()
-        model = model_service.get_model(ModelName.OPENAI_CHAT)
+        model_container = init_openAIChat()
+        model = model_container.model
         if not model:
             raise RuntimeError("Failed to get model from ModelService")
 
@@ -127,6 +127,33 @@ class DemoPromptService:
     ) -> str:
         logger.info(
             f"Generating summarize prompt. max_length: {max_length.value}, response_format: {response_format.value}, content: {content}"
+        )
+        prompt = self.template.invoke(
+            {
+                "content": content,
+                "max_length": max_length.description,
+                "response_format": response_format.description,
+                "rules": response_format.rules,
+            }
+        )
+        logger.debug(f"Generated prompt: {prompt}")
+
+        response = self.model_instance.invoke(prompt, max_tokens=max_length.max_tokens)
+        logger.debug(f"Received response: {response}")
+
+        if isinstance(response.content, str):
+            return response.content
+
+        return str(response.content)
+
+    def getSummarizePromptV2(
+        self,
+        max_length: ResponseLengthOptions,
+        response_format: ResponseFormatOptions,
+        content: str,
+    ) -> str:
+        logger.info(
+            f"Generating summarize prompt v2. max_length: {max_length.value}, response_format: {response_format.value}, content: {content}"
         )
         prompt = self.template.invoke(
             {

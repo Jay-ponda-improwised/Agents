@@ -1,7 +1,6 @@
 import re
 from langchain_core.prompts import PromptTemplate
-from service.model_service import convert_prompt
-
+from utils.model_service import convert_prompt
 
 template_string = """
     Index: 
@@ -29,7 +28,6 @@ template_string = """
     4. Content to summarize:
     {content}
 """
-
 
 
 template = PromptTemplate(

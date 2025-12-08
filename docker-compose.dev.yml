@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.10'
 
 services:
   postgres:
@@ -53,6 +53,18 @@ services:
       retries: 3
       start_period: 30s
     command: ["bash", "-c", "source /opt/conda/etc/profile.d/conda.sh && conda activate langchain_env && uvicorn main:app --host 0.0.0.0 --port 33001"]
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+          target: /app
+          ignore:
+            - "**/__pycache__/**"
+            - "**/.git/**"
+            - "**/.vscode/**"
+            - ".cache/**"
+            - "lang-env/**"
+            - "langchain_env/**"
 
   frontend:
     build: ./ui

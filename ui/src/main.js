@@ -3,6 +3,7 @@ import './assets/css/layout.css'
 import './assets/css/embeddings.css'
 import './assets/css/prompts.css'
 import './assets/css/response-time-display.css'
+import 'vue-json-pretty/lib/styles.css';
 
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'

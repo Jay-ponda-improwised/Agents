@@ -2,7 +2,7 @@ import logging
 import random
 from typing import cast
 from langchain_openai import ChatOpenAI
-from service.model_service import get_model_service
+from utils.model_service import init_openAIChat
 from config.enums import ModelName
 
 logger = logging.getLogger(__name__)
@@ -13,16 +13,17 @@ class DemoModel:
     def chat(question: str):
         logger.info(f"DemoModel.chat method called with question: {question}")
 
-        model_service = get_model_service()
         seed = random.randint(0, 999999)
         logger.debug(f"Using seed for ChatOpenAI: {seed}")
         
         try:
-            model_instance = model_service.get_model(ModelName.OPENAI_CHAT, seed=seed)
-            if not model_instance:
+            # Directly initialize the model, which returns a container
+            model_container = init_openAIChat(seed=seed)
+            if not model_container.model:
                 raise RuntimeError("Failed to get model from ModelService")
 
-            model = cast(ChatOpenAI, model_instance)
+            # The actual model instance is in the .model attribute
+            model = cast(ChatOpenAI, model_container.model)
 
             response = model.invoke(
                 f"""

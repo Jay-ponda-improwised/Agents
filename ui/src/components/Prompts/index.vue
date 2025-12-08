@@ -26,9 +26,11 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Summarize from './Summarize.vue';
+import SummaryV2 from './SummaryV2.vue';
 
 const tabs = [
-  { id: 'Summarize', name: 'Summarize Text', component: Summarize }
+  { id: 'Summarize', name: 'Summarize Text', component: Summarize },
+  { id: 'SummaryV2', name: 'Summary v2', component: SummaryV2 }
 ];
 
 const router = useRouter();
